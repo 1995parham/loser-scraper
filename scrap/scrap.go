@@ -16,13 +16,12 @@ type Scrapper struct {
 
 // New creates a new scapper for given user
 func New(u string) Scrapper {
-	r := resty.New()
-	r.HostURL = fmt.Sprintf("https://twitter.com/%s", u)
+	r := resty.New().SetDoNotParseResponse(true).SetHostURL(fmt.Sprintf("https://twitter.com/%s", u)).SetRedirectPolicy(resty.FlexibleRedirectPolicy(20))
 	return Scrapper{r}
 }
 
 // Scrap scraps twitter page
-func (s Scrapper) Scrap() (io.Reader, error) {
+func (s Scrapper) Scrap() (io.ReadCloser, error) {
 	logrus.Infof("sending request for fetching twitter timeline")
 	resp, err := s.r.R().Get("")
 	if err != nil {
