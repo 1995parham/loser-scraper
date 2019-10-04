@@ -15,6 +15,7 @@ package parser
 
 import (
 	"io"
+	"sort"
 	"strconv"
 	"time"
 
@@ -64,6 +65,8 @@ func ExtractTimeline(input io.Reader) ([]Timeline, error) {
 
 		timelines = append(timelines, timeline)
 	})
+
+	sort.Slice(timelines, func(i, j int) bool { return timelines[i].At.Before(timelines[j].At) })
 
 	return timelines, nil
 }
