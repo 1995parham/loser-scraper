@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/1995parham/loser-scraper/config"
 	"github.com/1995parham/loser-scraper/parser"
@@ -15,6 +16,8 @@ import (
 
 func main() {
 	fmt.Println("18.20 at Sep 07 2016 7:20 IR721")
+
+	var latest time.Time
 
 	cfg := config.New()
 
@@ -38,7 +41,10 @@ func main() {
 			return
 		}
 		for _, t := range ts {
-			logrus.Infof("Tweet %d from %s at %s: %s\n", t.Index, t.User, t.At, t.Content)
+			if t.At.After(latest) {
+				latest = t.At
+				logrus.Infof("Tweet %d from %s at %s: %s\n", t.Index, t.User, t.At, t.Content)
+			}
 		}
 	})
 	if err != nil {
