@@ -16,7 +16,10 @@ type Scrapper struct {
 
 // New creates a new scapper for given user
 func New(u string) Scrapper {
-	r := resty.New().SetDoNotParseResponse(true).SetHostURL(fmt.Sprintf("https://twitter.com/%s", u)).SetRedirectPolicy(resty.FlexibleRedirectPolicy(20))
+	r := resty.New().
+		SetDoNotParseResponse(true).
+		SetHostURL(fmt.Sprintf("https://twitter.com/%s", u)).
+		SetRedirectPolicy(resty.FlexibleRedirectPolicy(20))
 	return Scrapper{r}
 }
 
