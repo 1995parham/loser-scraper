@@ -11,6 +11,7 @@ import (
 // Config holds all configurations
 type Config struct {
 	Target string
+	Period string
 	Mail   struct {
 		Host     string
 		Port     int
