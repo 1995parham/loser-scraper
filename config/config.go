@@ -12,6 +12,7 @@ import (
 type Config struct {
 	Target string
 	Period string
+	You    string
 	Mail   struct {
 		Host     string
 		Port     int
