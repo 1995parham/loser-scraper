@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/1995parham/loser-scraper/config"
+	"github.com/1995parham/loser-scraper/mail"
 	"github.com/1995parham/loser-scraper/parser"
 	"github.com/1995parham/loser-scraper/scrap"
 	"github.com/robfig/cron/v3"
@@ -21,9 +22,14 @@ func main() {
 
 	cfg := config.New()
 
+	ml, err := mail.New(cfg.Mail.Host, cfg.Mail.Port, cfg.Mail.Username, cfg.Mail.Password)
+	if err != nil {
+		logrus.Fatalf("mailer initiation failed: %s", err)
+	}
+
 	c := cron.New()
 
-	_, err := c.AddFunc(fmt.Sprintf("@every %s", cfg.Period), func() {
+	if _, err := c.AddFunc(fmt.Sprintf("@every %s", cfg.Period), func() {
 		sc := scrap.New(cfg.Target)
 		rd, err := sc.Scrap()
 		if err != nil {
@@ -40,14 +46,20 @@ func main() {
 			logrus.Errorf("parser failed: %s", err)
 			return
 		}
+
+		toSend := make([]parser.Timeline, 0)
 		for _, t := range ts {
 			if t.At.After(latest) {
 				latest = t.At
 				logrus.Infof("Tweet %d from %s at %s: %s\n", t.Index, t.User, t.At, t.Content)
+				toSend = append(toSend, t)
 			}
 		}
-	})
-	if err != nil {
+
+		if err := ml.Send(toSend, cfg.You, cfg.Mail.Username); err != nil {
+			logrus.Errorf("send failed: %s", err)
+		}
+	}); err != nil {
 		logrus.Fatalf("failed to register scraper: %s", err)
 	}
 
