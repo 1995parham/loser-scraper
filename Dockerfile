@@ -2,6 +2,8 @@
 # https://docs.docker.com/engine/userguide/eng-image/multistage-build/
 FROM golang:1.13.1 as builder
 
+RUN mkdir -p "$GOPATH/src/github.com/1995parham/loser-scraper"
+WORKDIR $GOPATH/src/github.com/1995parham/loser-scraper
 ENV GO111MODULE=on
 
 COPY . .
