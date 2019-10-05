@@ -2,8 +2,10 @@
 # https://docs.docker.com/engine/userguide/eng-image/multistage-build/
 FROM golang:1.13.1 as builder
 
+ENV GO111MODULE=on
+
 COPY . .
-RUN go build -o /bin/app
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /bin/app
 
 FROM alpine:3.10
 
