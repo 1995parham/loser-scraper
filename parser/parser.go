@@ -14,6 +14,7 @@
 package parser
 
 import (
+	"html/template"
 	"io"
 	"sort"
 	"strconv"
@@ -27,7 +28,7 @@ import (
 type Timeline struct {
 	User    string
 	Index   int
-	Content string
+	Content template.HTML
 	At      time.Time
 }
 
@@ -54,7 +55,7 @@ func ExtractTimeline(input io.Reader) ([]Timeline, error) {
 		if err != nil {
 			logrus.Errorf("tweet content fetch error: %s", err)
 		}
-		timeline.Content = content
+		timeline.Content = template.HTML(content)
 
 		// timestamp
 		secs, err := strconv.Atoi(s.Find("span._timestamp").AttrOr("data-time", "0"))
