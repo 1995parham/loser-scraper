@@ -56,7 +56,7 @@ func main() {
 			}
 		}
 
-		if err := ml.Send(toSend, cfg.You, cfg.Mail.Username); err != nil {
+		if err := ml.Send(cfg.Target, toSend, cfg.You, cfg.Mail.Username); err != nil {
 			logrus.Errorf("send failed: %s", err)
 		}
 	}); err != nil {
