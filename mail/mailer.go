@@ -17,6 +17,7 @@ type Mailer struct {
 // info contains the required information for creating an eamil message
 type info struct {
 	Timelines []parser.Timeline
+	Target    string
 }
 
 // New creates a new mailer
@@ -36,10 +37,11 @@ func New(host string, port int, username string, password string) (*Mailer, erro
 }
 
 // Send sends given timelines based on configured mail server
-func (m *Mailer) Send(ts []parser.Timeline, to string, from string) error {
+func (m *Mailer) Send(t string, ts []parser.Timeline, to string, from string) error {
 	buf := bytes.NewBufferString("")
 	if err := m.tmpl.Execute(buf, info{
 		Timelines: ts,
+		Target:    t,
 	}); err != nil {
 		return err
 	}
