@@ -55,6 +55,7 @@ func ExtractTimeline(input io.Reader) ([]Timeline, error) {
 		if err != nil {
 			logrus.Errorf("tweet content fetch error: %s", err)
 		}
+		// nolint:gosec
 		timeline.Content = template.HTML(content)
 
 		// timestamp
